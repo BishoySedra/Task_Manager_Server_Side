@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {required}=require('nodemon/lib/config');
 
 const taskSchema = new mongoose.Schema({
     name: {
@@ -18,7 +19,8 @@ const taskSchema = new mongoose.Schema({
         }
     },
     category: {
-        type: String
+        type: String,
+        required: [true, 'Task category must be provided'],
     },
     points: {
         type: Number,
@@ -46,6 +48,9 @@ const taskSchema = new mongoose.Schema({
     estimated_time: {
         type: Number
     },
+    subtasks: [{
+        type: String,
+    }],
     user_id: [{
         type: mongoose.Schema.Types.ObjectId,
         ref:'User'
