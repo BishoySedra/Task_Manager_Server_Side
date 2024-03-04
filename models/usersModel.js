@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -33,6 +34,7 @@ const userSchema = new mongoose.Schema({
     created_at: {
         type: Date,
         default: Date.now(),
+        select:false
     },
     active: {
         type: Boolean,
@@ -45,8 +47,41 @@ const userSchema = new mongoose.Schema({
     Tasks: [{
         type: mongoose.Schema.Types.ObjectId,
         ref:'Task'
-    }]
+    }],
+    Categories: [{
+         type: String , default: ['Sports', 'Education', 'Work']
+}],
 })
+
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
+    this.password = await bcrypt.hash(this.password, 12);
+    this.password_confirm = undefined;
+    next();
+});
+
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
+    
+    this.passwordChangedAt = Date.now() - 1000;
+    next();
+});
+
+
+userSchema.methods.passwordComparison = async function (loginPassword, savedPassword) {
+    return await bcrypt.compare(loginPassword, savedPassword);
+};
+
+userSchema.methods.changePasswordAuthentication = function (tokenIssuedAt) {
+    if(this.passwordChangedAt)
+    {
+        const changeTime = parseInt(this.passwordChangedAt.getTime() / 1000,10);
+        console.log(changeTime);
+        return changeTime > tokenIssuedAt;
+    }
+    return false;    
+};
+
 
 const User = mongoose.model('User', userSchema);
 

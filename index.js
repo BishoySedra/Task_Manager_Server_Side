@@ -2,21 +2,36 @@ const express = require("express");
 const mongoose = require("mongoose");
 const tasksRouter = require('./routes/tasksRouter')
 const globalErrorHandler = require('./utils/globalErrorHandler')
+const app = require('./app');
 
-const app = express();
-app.use(express.json());
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 
-app.use('/tasks', tasksRouter)
+process.on('uncaughtException', err => {
+    console.log(err.name , err.message);
+    console.log('Unhandled Exception, shutting down');
+    process.exit(1);
+});
 
-/*app.all('*', (req, res, next) => {
-    res.status(404).json({ status: "error", data: { msg: "URL not found" } })
-})*/
 
-app.use(globalErrorHandler)
+const DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASS);
 
-mongoose.connect('mongodb://localhost:27017/task-manager')
-	.then(()=> console.log('Connected!'));
-
-app.listen(4000, () =>{
-	console.log('Listening on port 4000')
+mongoose.connect(DB).then(con => {
+    console.log('db connection succesfful');
 })
+
+const port = process.env.PORT || 8000;
+
+const server = app.listen(port, () => {
+    console.log(`CORS-enabled App running on port ${port}...`);
+});
+
+process.on('unhandledRejection', err => {
+    console.log(err.name , err.message);
+    console.log('Unhandled Rejection, shutting down');
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
+
