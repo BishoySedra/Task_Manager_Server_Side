@@ -11,13 +11,17 @@ const taskSchema = new mongoose.Schema({
         trim: true
     },
     priority: {
+        type: String,
         enum: {
             values: ['low', 'medium', 'high'],
             message: 'priorities are: low, medium, high'
-        } 
+        }
     },
-    category: [{ type: String}],
+    category: {
+        type: String
+    },
     points: {
+        type: Number,
         enum: {
             values: [3, 5, 8, 11, 13, 18, 21],
             message: 'Fibonacci values only: 3, 5, 8, 11, 13, 18, 21'
@@ -43,7 +47,7 @@ const taskSchema = new mongoose.Schema({
         type: Number
     },
     user_id: [{
-        uid: mongoose.Schema.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref:'User'
     }]
 })

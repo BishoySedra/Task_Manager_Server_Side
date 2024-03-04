@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: [validator.isEmail, 'Please type email in valid format'],
         trim: true,
-        lowercase: true  
+        lowercase: true
     },
     password: {
         type: String,
@@ -39,15 +39,15 @@ const userSchema = new mongoose.Schema({
         default: true
     },
     Friends: [{
-        friend_id: {type: mongoose.Schema.ObjectId, ref: 'User'},
+        friend_id: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
         request_approval: Boolean
     }],
     Tasks: [{
-        task_id: mongoose.Schema.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref:'Task'
     }]
 })
 
-const User = mongoose.model('User', 'userSchema');
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
