@@ -24,8 +24,8 @@ const taskSchema = new mongoose.Schema({
     points: {
         type: Number,
         enum: {
-            values: [3, 5, 8, 11, 13, 18, 21],
-            message: 'Fibonacci values only: 3, 5, 8, 11, 13, 18, 21'
+            values: [1, 2, 3, 5, 8, 11, 13, 18, 21],
+            message: 'Fibonacci values only: 1, 2, 3, 5, 8, 11, 13, 18, 21'
         }
     },
     deadline: {
