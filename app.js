@@ -24,7 +24,7 @@ const app = express()
 })*/
 
 // Apply the rate limiting middleware to all requests.
-app.use(limiter)
+//app.use(limiter)
 
 // Enable cors
 app.use(cors())
