@@ -2,7 +2,7 @@ const asyncHandler = require('../utils/asyncHandler')
 const AppError = require('../utils/appError')
 
 const getMany = (Model) => asyncHandler(async(req, res, next)=> {
-	const doc = await Model.find();
+	const doc = await Model.find({'_id': False});
 	return res.status(200).json({
 		status: 'success',
 		data: doc

@@ -19,7 +19,6 @@ const taskSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        required: [true, 'Task category must be provided'],
     },
     points: {
         type: Number,
