@@ -1,6 +1,14 @@
 const Task=require("../models/tasksModel");
 const asyncHandler=require("../utils/asyncHandler");
 
+const getAllTasks = asyncHandler(async(req, res, next)=> {
+	const tasks = await Task.find({user_id: req.user._id});
+	return res.status(200).json({
+		status: 'success',
+		data: tasks
+	})
+})
+
 const getFinishedTasks = asyncHandler(async(req, res, next)=> {
 	const tasks = await Task.find({finished_at: {$ne: null}});
 	return res.status(200).json({
@@ -31,5 +39,6 @@ const getTasksCloseToDeadline = asyncHandler(async(req, res, next)=> {
 module.exports = {
 	getFinishedTasks,
 	getTasksInProgress,
-	getTasksCloseToDeadline
+	getTasksCloseToDeadline,
+	getAllTasks
 }

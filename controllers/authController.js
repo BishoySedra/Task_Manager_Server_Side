@@ -11,27 +11,27 @@ function sign_token (id) {
 
 function send_token (user, statusCode, req, res) {
     const token = sign_token(user._id);
-    
-    
+
+
     res.cookie('jwt', token, {
-        expires: new Date(
+        expiresIn: new Date(
           Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
         secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
       });
-    
+
     console.log(res);
     res.cookie('jwt', token, {
-        expires: new Date(
+        expiresIn: new Date(
           Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
         httpOnly: true,
         secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
       });
-    
+
       // Remove password from output
-      user.password = undefined;    
+      user.password = undefined;
 
           res.status(200).json({
             status: 'success',
@@ -47,7 +47,7 @@ module.exports.signUp = asyncHandler(async (req, res, next) => {
         password: req.body.password,
         password_confirm: req.body.password_confirm
     });
-    
+
     send_token(user, 200, req, res);
 });
 
@@ -64,12 +64,12 @@ module.exports.login = asyncHandler(async (req, res, next) => {
     if (!user.passwordComparison(password, user.password))
         return next(new AppError("Incorrect username or password"), 404);
         console.log(user._id);
-    send_token(user, 200, req, res);    
+    send_token(user, 200, req, res);
 });
 
 module.exports.protect = asyncHandler(async (req, res, next) => {
     let token;
-    
+
     if (req.headers.authorization && req.headers.authorization.startsWith("Bearer"))
         token = req.headers.authorization.split(' ')[1];
     else if (req.cookies.jwt)
@@ -80,7 +80,7 @@ module.exports.protect = asyncHandler(async (req, res, next) => {
     }
 
     let decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
-    
+
     const user = await User.findById(decoded.id);
 
     if (!user) {
