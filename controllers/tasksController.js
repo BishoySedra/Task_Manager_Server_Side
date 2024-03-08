@@ -10,7 +10,7 @@ const getAllTasks = asyncHandler(async(req, res, next)=> {
 })
 
 const getFinishedTasks = asyncHandler(async(req, res, next)=> {
-	const tasks = await Task.find({finished_at: {$ne: null}});
+	const tasks = await Task.find({finished_at: {$ne: null},user_id: req.user._id});
 	return res.status(200).json({
 		status: 'success',
 		data: tasks
@@ -18,7 +18,7 @@ const getFinishedTasks = asyncHandler(async(req, res, next)=> {
 })
 
 const getTasksInProgress = asyncHandler(async(req, res, next)=> {
-	const tasks = await Task.find({started_at: {$ne: null}, finished_at: null});
+	const tasks = await Task.find({started_at: {$ne: null}, finished_at: null, user_id: req.user._id});
 	return res.status(200).json({
 		status: 'success',
 		data: tasks
@@ -29,7 +29,7 @@ const getTasksCloseToDeadline = asyncHandler(async(req, res, next)=> {
 	const {days} = req.params;
 	const deadline = new Date().setTime(new Date().getTime() + (days * 24 * 60 * 60 * 1000));
 
-	const tasks = await Task.find({deadline: {$lte: deadline}});
+	const tasks = await Task.find({deadline: {$lte: deadline}, user_id: req.user._id});
 	return res.status(200).json({
 		status: 'success',
 		data: tasks
